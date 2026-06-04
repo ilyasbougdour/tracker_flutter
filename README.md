@@ -16,8 +16,8 @@ guidee par une organisation DDDA.
 
 - `lib/src/domain` : entites metier et contrats repositories.
 - `lib/src/application` : controllers Riverpod et calculs applicatifs.
-- `lib/src/infrastructure` : Auth Firebase REST, chemins Firestore,
-  repository Firestore REST et repository demo local.
+- `lib/src/infrastructure` : Auth Firebase REST, configuration Firebase,
+  chemins Firestore, repository Firestore REST et repository de test local.
 - `lib/src/presentation` : pages, formulaires et widgets UI.
 
 ## Collections Firestore
@@ -41,14 +41,19 @@ Chaque driver possede ses donnees sous son identifiant :
 
 ## Firebase / Firestore reel
 
-L'application runtime utilise Firebase reel. Il faut fournir la cle Web API
-Firebase Auth et l'identifiant du projet Firestore :
+L'application runtime utilise Firebase reel avec le projet `tracker-flutter-119ee`.
+La commande principale est :
 
 ```powershell
-flutter run --dart-define=FIREBASE_API_KEY=VOTRE_CLE --dart-define=FIREBASE_PROJECT_ID=VOTRE_PROJECT_ID
+flutter run -d chrome
 ```
 
-Sans ces deux valeurs, l'application refuse la connexion ou l'acces Firestore.
+Il reste possible de cibler un autre projet Firebase avec `--dart-define` :
+
+```powershell
+flutter run -d chrome --dart-define=FIREBASE_API_KEY=VOTRE_CLE --dart-define=FIREBASE_PROJECT_ID=VOTRE_PROJECT_ID
+```
+
 Le repository local en memoire existe uniquement pour les tests automatises.
 
 ## Validation

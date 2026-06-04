@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 
 import '../domain/entities/user_session.dart';
+import 'firebase_config.dart';
 
 class FirebaseAuthBackendService {
   FirebaseAuthBackendService(this._dio);
@@ -11,7 +12,7 @@ class FirebaseAuthBackendService {
     required String email,
     required String password,
   }) async {
-    const String apiKey = String.fromEnvironment('FIREBASE_API_KEY');
+    const String apiKey = FirebaseConfig.apiKey;
 
     if (apiKey.isEmpty) {
       throw StateError(
