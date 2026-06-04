@@ -75,19 +75,39 @@ class VehiclesPage extends ConsumerWidget {
     );
 
     if (confirmed == true) {
-      await ref
-          .read(fleetControllerProvider.notifier)
-          .addVehicle(
-            brand: brandController.text.trim(),
-            model: modelController.text.trim(),
-            plateNumber: plateController.text.trim(),
-            odometerKm: int.parse(odometerController.text.trim()),
-          );
+      try {
+        await ref
+            .read(fleetControllerProvider.notifier)
+            .addVehicle(
+              brand: brandController.text.trim(),
+              model: modelController.text.trim(),
+              plateNumber: plateController.text.trim(),
+              odometerKm: int.parse(odometerController.text.trim()),
+            );
 
-      if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Voiture ajoutee')));
+        if (context.mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Voiture ajoutee')));
+        }
+      } catch (error) {
+        if (context.mounted) {
+          await showDialog<void>(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Erreur ajout voiture'),
+                content: Text(_friendlyError(error)),
+                actions: <Widget>[
+                  FilledButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+        }
       }
     }
   }
@@ -144,4 +164,16 @@ String? _positiveInt(String? value) {
     return 'Nombre invalide';
   }
   return null;
+}
+
+String _friendlyError(Object error) {
+  final String message = error.toString();
+  if (message.contains('PERMISSION_DENIED')) {
+    return 'Firestore refuse l\'ecriture. Verifiez les regles et que '
+        'request.auth.uid correspond au dossier drivers/{uid}.';
+  }
+  if (message.contains('NETWORK') || message.contains('XMLHttpRequest')) {
+    return 'Erreur reseau Firebase. Verifiez la connexion et la configuration.';
+  }
+  return message;
 }
