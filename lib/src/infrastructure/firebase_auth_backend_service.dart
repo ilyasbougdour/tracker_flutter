@@ -14,10 +14,9 @@ class FirebaseAuthBackendService {
     const String apiKey = String.fromEnvironment('FIREBASE_API_KEY');
 
     if (apiKey.isEmpty) {
-      return UserSession(
-        driverId: email.replaceAll(RegExp('[^a-zA-Z0-9]'), '_'),
-        email: email,
-        token: 'demo-token',
+      throw StateError(
+        'Firebase Auth non configure. '
+        'Ajoutez FIREBASE_API_KEY avec --dart-define.',
       );
     }
 

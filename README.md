@@ -39,19 +39,17 @@ Chaque driver possede ses donnees sous son identifiant :
 - Dashboard avec depenses mensuelles, repartition gasoil/maintenance et
   consommation par vehicule.
 
-## Firebase / Firestore
+## Firebase / Firestore reel
 
-Mode demo local :
-
-```powershell
-flutter run
-```
-
-Mode Firebase Auth + Firestore REST :
+L'application runtime utilise Firebase reel. Il faut fournir la cle Web API
+Firebase Auth et l'identifiant du projet Firestore :
 
 ```powershell
 flutter run --dart-define=FIREBASE_API_KEY=VOTRE_CLE --dart-define=FIREBASE_PROJECT_ID=VOTRE_PROJECT_ID
 ```
+
+Sans ces deux valeurs, l'application refuse la connexion ou l'acces Firestore.
+Le repository local en memoire existe uniquement pour les tests automatises.
 
 ## Validation
 

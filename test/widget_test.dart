@@ -1,13 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tracker_flutter/src/application/app_providers.dart';
 import 'package:tracker_flutter/src/app/tracker_app.dart';
+import 'package:tracker_flutter/src/domain/entities/user_session.dart';
+import 'package:tracker_flutter/src/domain/repositories/auth_repository.dart';
+import 'package:tracker_flutter/src/infrastructure/in_memory_fleet_repository.dart';
+
+class FakeAuthRepository implements AuthRepository {
+  @override
+  Future<UserSession> signIn({
+    required String email,
+    required String password,
+  }) async {
+    return UserSession(
+      driverId: 'driver_esisa_demo',
+      email: email,
+      token: 'test-token',
+    );
+  }
+
+  @override
+  Future<void> signOut() async {}
+}
 
 void main() {
   testWidgets('login driver puis ajout de vehicule', (
     WidgetTester tester,
   ) async {
-    await tester.pumpWidget(const ProviderScope(child: TrackerApp()));
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authRepositoryProvider.overrideWithValue(FakeAuthRepository()),
+          fleetRepositoryProvider.overrideWithValue(InMemoryFleetRepository()),
+        ],
+        child: const TrackerApp(),
+      ),
+    );
 
     expect(find.text('Connexion Driver'), findsOneWidget);
 
