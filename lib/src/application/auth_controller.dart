@@ -32,7 +32,10 @@ class AuthController extends StateNotifier<AuthState> {
 
   final AuthRepository _repository;
 
-  Future<void> signIn({required String email, required String password}) async {
+  Future<UserSession?> signIn({
+    required String email,
+    required String password,
+  }) async {
     state = state.copyWith(isLoading: true, clearError: true);
 
     try {
@@ -41,8 +44,10 @@ class AuthController extends StateNotifier<AuthState> {
         password: password,
       );
       state = AuthState(user: user);
+      return user;
     } catch (error) {
       state = AuthState(errorMessage: error.toString());
+      return null;
     }
   }
 

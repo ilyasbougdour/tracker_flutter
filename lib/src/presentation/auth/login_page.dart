@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../application/app_providers.dart';
 import '../../application/auth_controller.dart';
+import '../../application/fleet_controller.dart';
+import '../../domain/entities/user_session.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -28,17 +30,20 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       return;
     }
 
-    await ref
-        .read(authControllerProvider.notifier)
-        .signIn(
-          email: _emailController.text.trim(),
-          password: _passwordController.text,
-        );
+    final AuthController authController = ref.read(
+      authControllerProvider.notifier,
+    );
+    final FleetController fleetController = ref.read(
+      fleetControllerProvider.notifier,
+    );
 
-    final AuthState authState = ref.read(authControllerProvider);
-    final String? driverId = authState.user?.driverId;
-    if (driverId != null) {
-      await ref.read(fleetControllerProvider.notifier).loadForOwner(driverId);
+    final UserSession? user = await authController.signIn(
+      email: _emailController.text.trim(),
+      password: _passwordController.text,
+    );
+
+    if (user != null) {
+      await fleetController.loadForOwner(user.driverId);
     }
   }
 
