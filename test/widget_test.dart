@@ -40,6 +40,14 @@ void main() {
 
     expect(find.text('Connexion Driver'), findsOneWidget);
 
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Email'),
+      'ilyas@esisa.com',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Password'),
+      'password',
+    );
     await tester.tap(find.text('Se connecter'));
     await tester.pumpAndSettle();
 
