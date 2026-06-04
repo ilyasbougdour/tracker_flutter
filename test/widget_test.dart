@@ -45,5 +45,18 @@ void main() {
 
     expect(find.text('Ford Focus'), findsOneWidget);
     expect(find.text('Voiture ajoutee'), findsOneWidget);
+
+    await tester.tap(find.byIcon(Icons.build_outlined));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Tous les vehicules'), findsOneWidget);
+    expect(find.textContaining('Renault Clio - Vidange'), findsOneWidget);
+
+    await tester.tap(find.text('Tous les vehicules'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Dacia Logan').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Aucune maintenance trouvee'), findsOneWidget);
   });
 }

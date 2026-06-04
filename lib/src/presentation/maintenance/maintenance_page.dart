@@ -18,6 +18,7 @@ class MaintenancePage extends ConsumerStatefulWidget {
 }
 
 class _MaintenancePageState extends ConsumerState<MaintenancePage> {
+  String? _filterVehicleId;
   DateTime? _filterDate;
 
   Future<void> _showMaintenanceDialog(BuildContext context) async {
@@ -184,42 +185,94 @@ class _MaintenancePageState extends ConsumerState<MaintenancePage> {
   Widget build(BuildContext context) {
     final FleetState fleet = ref.watch(fleetControllerProvider);
     final DateFormat dateFormat = DateFormat('dd/MM/yyyy');
-    final List<Maintenance> items = _filterDate == null
-        ? fleet.maintenances
-        : fleet.maintenances.where((Maintenance maintenance) {
-            return maintenance.date.year == _filterDate!.year &&
-                maintenance.date.month == _filterDate!.month &&
-                maintenance.date.day == _filterDate!.day;
-          }).toList();
+    final List<Maintenance> items = fleet.maintenances.where((
+      Maintenance maintenance,
+    ) {
+      final bool vehicleMatches =
+          _filterVehicleId == null || maintenance.vehicleId == _filterVehicleId;
+      final bool dateMatches =
+          _filterDate == null ||
+          maintenance.date.year == _filterDate!.year &&
+              maintenance.date.month == _filterDate!.month &&
+              maintenance.date.day == _filterDate!.day;
+
+      return vehicleMatches && dateMatches;
+    }).toList();
 
     return Scaffold(
       body: Column(
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(12),
-            child: Row(
+            child: Column(
               children: <Widget>[
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: _pickFilterDate,
-                    icon: const Icon(Icons.filter_alt_outlined),
-                    label: Text(
-                      _filterDate == null
-                          ? 'Filtrer par date'
-                          : dateFormat.format(_filterDate!),
-                    ),
+                DropdownButtonFormField<String>(
+                  initialValue: _filterVehicleId ?? 'all',
+                  decoration: const InputDecoration(
+                    labelText: 'Filtrer par vehicule',
+                    prefixIcon: Icon(Icons.directions_car_outlined),
                   ),
+                  items: <DropdownMenuItem<String>>[
+                    const DropdownMenuItem<String>(
+                      value: 'all',
+                      child: Text('Tous les vehicules'),
+                    ),
+                    ...fleet.vehicles.map((Vehicle vehicle) {
+                      return DropdownMenuItem<String>(
+                        value: vehicle.id,
+                        child: Text(vehicle.label),
+                      );
+                    }),
+                  ],
+                  onChanged: (String? value) {
+                    setState(() {
+                      _filterVehicleId = value == 'all' ? null : value;
+                    });
+                  },
                 ),
-                if (_filterDate != null) ...<Widget>[
-                  const SizedBox(width: 8),
-                  IconButton(
-                    tooltip: 'Retirer filtre',
-                    onPressed: () {
-                      setState(() {
-                        _filterDate = null;
-                      });
-                    },
-                    icon: const Icon(Icons.close),
+                const SizedBox(height: 10),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: _pickFilterDate,
+                        icon: const Icon(Icons.filter_alt_outlined),
+                        label: Text(
+                          _filterDate == null
+                              ? 'Filtrer par date'
+                              : dateFormat.format(_filterDate!),
+                        ),
+                      ),
+                    ),
+                    if (_filterDate != null) ...<Widget>[
+                      const SizedBox(width: 8),
+                      IconButton(
+                        tooltip: 'Retirer filtre date',
+                        onPressed: () {
+                          setState(() {
+                            _filterDate = null;
+                          });
+                        },
+                        icon: const Icon(Icons.close),
+                      ),
+                    ],
+                  ],
+                ),
+                if (_filterVehicleId != null ||
+                    _filterDate != null) ...<Widget>[
+                  const SizedBox(height: 8),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: TextButton.icon(
+                      onPressed: () {
+                        setState(() {
+                          _filterVehicleId = null;
+                          _filterDate = null;
+                        });
+                      },
+                      icon: const Icon(Icons.filter_alt_off_outlined),
+                      label: const Text('Reinitialiser les filtres'),
+                    ),
                   ),
                 ],
               ],

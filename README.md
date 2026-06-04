@@ -29,6 +29,16 @@ Chaque driver possede ses donnees sous son identifiant :
 - `drivers/{driverId}/maintenances`
 - `drivers/{driverId}/maintenanceCategories`
 
+## Fonctionnalites
+
+- Authentification Driver email/password.
+- Ajout et liste des voitures.
+- Enregistrement des pleins de gasoil par vehicule.
+- Enregistrement des maintenances par vehicule et categorie.
+- Historique de maintenance filtrable par vehicule et par date.
+- Dashboard avec depenses mensuelles, repartition gasoil/maintenance et
+  consommation par vehicule.
+
 ## Firebase / Firestore
 
 Mode demo local :
