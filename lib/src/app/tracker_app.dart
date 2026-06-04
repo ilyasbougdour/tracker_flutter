@@ -10,7 +10,7 @@ class TrackerApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp.router(
-      title: 'Fleet SaaS Tracker',
+      title: 'Cars Tracker',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
       routerConfig: ref.watch(goRouterProvider),

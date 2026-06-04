@@ -21,7 +21,7 @@ class AppShell extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Fleet SaaS Tracker'),
+        title: const Text('Cars Tracker'),
         actions: <Widget>[
           IconButton(
             tooltip: 'Deconnexion',

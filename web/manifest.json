@@ -1,6 +1,6 @@
 {
-    "name": "tracker_flutter",
-    "short_name": "tracker_flutter",
+    "name": "Cars Tracker",
+    "short_name": "Cars Tracker",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
