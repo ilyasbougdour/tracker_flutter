@@ -10,6 +10,7 @@ import '../domain/repositories/auth_repository.dart';
 import '../domain/repositories/fleet_repository.dart';
 import '../infrastructure/firebase_auth_backend_service.dart';
 import '../infrastructure/firebase_auth_repository.dart';
+import '../infrastructure/firestore_fleet_repository.dart';
 import '../infrastructure/in_memory_fleet_repository.dart';
 import 'auth_controller.dart';
 import 'fleet_controller.dart';
@@ -27,6 +28,15 @@ final Provider<AuthRepository> authRepositoryProvider =
 
 final Provider<FleetRepository> fleetRepositoryProvider =
     Provider<FleetRepository>((Ref ref) {
+      const String projectId = String.fromEnvironment('FIREBASE_PROJECT_ID');
+      if (projectId.isNotEmpty) {
+        return FirestoreFleetRepository(
+          dio: ref.watch(dioProvider),
+          projectId: projectId,
+          idTokenReader: () => ref.read(authControllerProvider).user?.token,
+        );
+      }
+
       return InMemoryFleetRepository();
     });
 
